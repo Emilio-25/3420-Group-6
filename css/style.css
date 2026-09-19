@@ -71,7 +71,69 @@ button {
     color: white;
 }
 
+.login-dropdown{
+    position: relative;
+    display: inline-block;
+}
 
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 120%;
+    background-color: #6c5ce7;
+    padding: 20px;
+    border-radius: 8px;
+    width: 240px;
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.5);
+    border: 1px solid #2d2d3a;
+    z-index:1000;
+}
+
+.dropdown-content.show{
+    display: block;
+}
+
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+}
+
+.login-form label {
+    font-size: 13px;
+    color: #adb5c2;
+}
+
+.login-form input {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #242a35;
+    background-color: #0b0e14;
+    color: white;
+    width: 100%;
+}
+
+.submit-btn {
+    margin-top: 10px;
+    background-color: #6c5ce7;
+    color: white;
+    font-weight: bold;
+}
+
+.dropdown-footer {
+    margin-top: 15px;
+    font-size: 13px;
+    text-align: center;
+    color: #adb5c2;
+}
+
+.dropdown-footer a {
+    color: #6c5ce7;
+    text-decoration: none;
+}
 /* HERO */
 
 .hero {
@@ -256,7 +318,9 @@ button {
     border-radius: 8px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 }
 
