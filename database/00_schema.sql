@@ -1,0 +1,142 @@
+CREATE DATABASE IF NOT EXISTS stattrax
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE stattrax;
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS ReportHistory;
+DROP TABLE IF EXISTS `Like`;
+DROP TABLE IF EXISTS `Comment`;
+DROP TABLE IF EXISTS `Report`;
+DROP TABLE IF EXISTS `Media`;
+DROP TABLE IF EXISTS `PlayerStat`;
+DROP TABLE IF EXISTS `Match`;
+DROP TABLE IF EXISTS `Admin`;
+DROP TABLE IF EXISTS `User`;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE `User` (
+    UserID INT AUTO_INCREMENT PRIMARY KEY,
+    Username VARCHAR(50) NOT NULL UNIQUE,
+    Password VARCHAR(255) NOT NULL,
+    Email VARCHAR(120) NOT NULL UNIQUE,
+    CreationDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PUUID VARCHAR(100) UNIQUE NULL,
+    RiotGameName VARCHAR(100) NULL,
+    RiotTagLine VARCHAR(20) NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE `Admin` (
+    AdminID INT AUTO_INCREMENT PRIMARY KEY,
+    Email VARCHAR(120) NOT NULL UNIQUE,
+    Password VARCHAR(255) NOT NULL,
+    PhoneNumber VARCHAR(30) NULL,
+    AdminLevel VARCHAR(30) NOT NULL DEFAULT 'Moderator'
+) ENGINE=InnoDB;
+
+CREATE TABLE `Match` (
+    MatchID INT AUTO_INCREMENT PRIMARY KEY,
+    GameMode VARCHAR(50) NOT NULL,
+    PlayedAt DATETIME NOT NULL,
+    Duration INT NOT NULL,
+    Result VARCHAR(20) NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE `Media` (
+    MediaID INT AUTO_INCREMENT PRIMARY KEY,
+    FilePath VARCHAR(255) NOT NULL,
+    Description VARCHAR(500) NULL,
+    CreationDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UserID INT NOT NULL,
+    DeletedByAdminID INT NULL,
+    CONSTRAINT fk_media_user
+        FOREIGN KEY (UserID) REFERENCES `User`(UserID)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_media_deleted_admin
+        FOREIGN KEY (DeletedByAdminID) REFERENCES `Admin`(AdminID)
+        ON UPDATE CASCADE ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE `Comment` (
+    CommentID INT AUTO_INCREMENT PRIMARY KEY,
+    CommentText VARCHAR(500) NOT NULL,
+    CreationDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UserID INT NOT NULL,
+    MediaID INT NOT NULL,
+    CONSTRAINT fk_comment_user
+        FOREIGN KEY (UserID) REFERENCES `User`(UserID)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_comment_media
+        FOREIGN KEY (MediaID) REFERENCES `Media`(MediaID)
+        ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE `Like` (
+    LikeID INT AUTO_INCREMENT PRIMARY KEY,
+    CreationDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UserID INT NOT NULL,
+    MediaID INT NOT NULL,
+    CONSTRAINT uq_like_user_media UNIQUE (UserID, MediaID),
+    CONSTRAINT fk_like_user
+        FOREIGN KEY (UserID) REFERENCES `User`(UserID)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_like_media
+        FOREIGN KEY (MediaID) REFERENCES `Media`(MediaID)
+        ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE `Report` (
+    ReportID INT AUTO_INCREMENT PRIMARY KEY,
+    Reason VARCHAR(500) NOT NULL,
+    CreationDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    Status VARCHAR(30) NOT NULL DEFAULT 'Pending',
+    UserID INT NOT NULL,
+    MediaID INT NOT NULL,
+    ReviewerAdminID INT NULL,
+    CONSTRAINT fk_report_user
+        FOREIGN KEY (UserID) REFERENCES `User`(UserID)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_report_media
+        FOREIGN KEY (MediaID) REFERENCES `Media`(MediaID)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_report_reviewer
+        FOREIGN KEY (ReviewerAdminID) REFERENCES `Admin`(AdminID)
+        ON UPDATE CASCADE ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE `PlayerStat` (
+    PlayerStatID INT AUTO_INCREMENT PRIMARY KEY,
+    Champion VARCHAR(80) NOT NULL,
+    DamageDealt INT NOT NULL DEFAULT 0,
+    DamageTaken INT NOT NULL DEFAULT 0,
+    WinOrLoss VARCHAR(20) NOT NULL,
+    Level INT NOT NULL DEFAULT 1,
+    GoldEarned INT NOT NULL DEFAULT 0,
+    Kills INT NOT NULL DEFAULT 0,
+    Deaths INT NOT NULL DEFAULT 0,
+    Assists INT NOT NULL DEFAULT 0,
+    UserID INT NOT NULL,
+    MatchID INT NOT NULL,
+    CONSTRAINT uq_playerstat_user_match UNIQUE (UserID, MatchID),
+    CONSTRAINT fk_playerstat_user
+        FOREIGN KEY (UserID) REFERENCES `User`(UserID)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_playerstat_match
+        FOREIGN KEY (MatchID) REFERENCES `Match`(MatchID)
+        ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Shadow/history table used by the explicit Report triggers.
+-- ReportID is intentionally not a foreign key so the audit row remains
+-- even after the original Report row is deleted.
+CREATE TABLE ReportHistory (
+    HistoryID INT AUTO_INCREMENT PRIMARY KEY,
+    ReportID INT NOT NULL,
+    ActionType VARCHAR(20) NOT NULL,
+    OldStatus VARCHAR(30) NULL,
+    NewStatus VARCHAR(30) NULL,
+    ChangedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
