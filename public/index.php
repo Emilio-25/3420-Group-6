@@ -90,14 +90,4 @@ require __DIR__ . '/../src/partials/header.php';
     </div>
 </section>
 
-<section class="mission-panel">
-    <div class="mission-title"><span>PHASE 5 CHECKLIST</span><h2>GUI Requirements</h2></div>
-    <div class="mission-steps">
-        <div><span>01</span><p>Player and administrator login with different controls.</p></div>
-        <div><span>02</span><p>CRUD operations available through the application interface.</p></div>
-        <div><span>03</span><p>Grouped aggregate player report with CSV and Print/PDF export.</p></div>
-        <div><span>04</span><p>Views, stored procedures, triggers, and every database table used by the application.</p></div>
-    </div>
-</section>
-
 <?php require __DIR__ . '/../src/partials/footer.php'; ?>

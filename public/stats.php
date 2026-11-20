@@ -34,7 +34,6 @@ $exportQuery = http_build_query(['user_id' => $userId, 'start_date' => $start, '
 require __DIR__ . '/../src/partials/header.php';
 ?>
 <h1>Player Analytics</h1>
-<p>The summary uses the Phase 4 <code>GetPlayerStatistics</code> procedure. The champion report adds aggregate functions with <code>GROUP BY</code> and can be exported.</p>
 <form method="get" class="panel no-print">
     <div class="form-row">
         <?php if (currentRole() === 'admin'): ?>

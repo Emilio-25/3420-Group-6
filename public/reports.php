@@ -24,7 +24,6 @@ try {
 require __DIR__ . '/../src/partials/header.php';
 ?>
 <h1>Moderation Queue</h1>
-<p>Admin-only page using the <code>PendingReports</code> view and <code>UpdateReportStatus</code> stored procedure.</p>
 <?php if (isset($message)): ?><div class="notice"><?= e($message) ?></div><?php endif; ?>
 <?php if (isset($error)): ?><div class="notice error"><?= e($error) ?></div><?php endif; ?>
 <form method="post" class="panel">

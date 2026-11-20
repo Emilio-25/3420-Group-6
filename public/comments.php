@@ -22,7 +22,6 @@ try {
 require __DIR__ . '/../src/partials/header.php';
 ?>
 <h1>DeleteComment Procedure</h1>
-<p>Use the demo comment (normally CommentID 4 after a fresh install), then capture before/after evidence.</p>
 <?php if (isset($message)): ?><div class="notice"><?= e($message) ?></div><?php endif; ?>
 <?php if (isset($error)): ?><div class="notice error"><?= e($error) ?></div><?php endif; ?>
 <form method="post" class="panel">

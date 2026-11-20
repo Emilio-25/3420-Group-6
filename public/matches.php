@@ -24,7 +24,6 @@ try {
 require __DIR__ . '/../src/partials/header.php';
 ?>
 <h1>Match History</h1>
-<p>The page reads from the <code>PlayerMatchSummary</code> view. Players see only their own match history; administrators can inspect any player.</p>
 <?php if (currentRole() === 'admin'): ?>
 <form method="get" class="panel">
     <label>Filter by username

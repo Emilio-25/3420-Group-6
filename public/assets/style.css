@@ -807,7 +807,6 @@ body:not(.home-page) td {
 }
 
 body:not(.home-page) th {
-    position: sticky;
     top: 71px;
     z-index: 5;
     color: #83eaff;

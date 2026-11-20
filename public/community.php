@@ -36,7 +36,6 @@ try {
 require __DIR__ . '/../src/partials/header.php';
 ?>
 <h1>Community Feed</h1>
-<p>The feed comes from the <code>MediaEngagement</code> view. Player accounts can create posts, delete their own posts, and submit moderation reports.</p>
 <?php if (isset($message)): ?><div class="notice"><?= e($message) ?></div><?php endif; ?>
 <?php if (isset($error)): ?><div class="notice error"><?= e($error) ?></div><?php endif; ?>
 
