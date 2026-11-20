@@ -6,80 +6,121 @@ if (isLoggedIn()) {
     exit;
 }
 
-$pageTitle = 'Login';
-$role = $_POST['role'] ?? 'user';
-$identifier = trim($_POST['identifier'] ?? '');
-$next = basename($_GET['next'] ?? $_POST['next'] ?? 'index.php');
+$pageTitle = 'Player Login';
+$bodyClass = 'auth-page';
+$identifier = trim((string)($_POST['identifier'] ?? ''));
+$next = basename((string)($_GET['next'] ?? $_POST['next'] ?? 'index.php'));
+
 if (!preg_match('/^[A-Za-z0-9_-]+\.php$/', $next)) {
     $next = 'index.php';
 }
 
+if (empty($_SESSION['player_login_csrf'])) {
+    $_SESSION['player_login_csrf'] = bin2hex(random_bytes(32));
+}
+
+$error = null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        if ($role === 'admin') {
-            $row = oneRow('SELECT AdminID, Email, Password, AdminLevel FROM `Admin` WHERE Email = ?', [$identifier]);
-            if ($row && password_verify($_POST['password'] ?? '', $row['Password'])) {
-                loginUser([
-                    'role' => 'admin',
-                    'id' => (int)$row['AdminID'],
-                    'display' => $row['Email'],
-                    'level' => $row['AdminLevel'],
-                ]);
-                header('Location: ' . $next);
-                exit;
-            }
-        } else {
-            $row = oneRow('SELECT UserID, Username, Email, Password FROM `User` WHERE Username = ? OR Email = ?', [$identifier, $identifier]);
-            if ($row && password_verify($_POST['password'] ?? '', $row['Password'])) {
+    $submittedToken = (string)($_POST['csrf_token'] ?? '');
+    $password = (string)($_POST['password'] ?? '');
+
+    if (!hash_equals($_SESSION['player_login_csrf'], $submittedToken)) {
+        $error = 'Your login session expired. Refresh the page and try again.';
+    } elseif ($identifier === '' || $password === '') {
+        $error = 'Enter your username or email and password.';
+    } else {
+        try {
+            $row = oneRow(
+                'SELECT UserID, Username, Email, Password FROM `User` WHERE Username = ? OR Email = ? LIMIT 1',
+                [$identifier, $identifier]
+            );
+
+            if ($row && password_verify($password, $row['Password'])) {
                 loginUser([
                     'role' => 'user',
                     'id' => (int)$row['UserID'],
                     'display' => $row['Username'],
                     'email' => $row['Email'],
                 ]);
+
+                unset($_SESSION['player_login_csrf']);
                 header('Location: ' . $next);
                 exit;
             }
+
+            $error = 'Invalid username/email or password.';
+        } catch (Throwable $e) {
+            error_log('[StatTrax player login] ' . $e->getMessage());
+            $error = 'StatTrax could not reach the database. Please try again shortly.';
         }
-        $error = 'Invalid login credentials.';
-    } catch (Throwable $e) {
-        $error = $e->getMessage();
     }
 }
 
-$bodyClass = 'auth-page';
 require __DIR__ . '/../src/partials/header.php';
 ?>
 <section class="auth-shell">
     <div class="auth-copy">
-        <span class="section-kicker">SECURE ACCESS</span>
+        <span class="section-kicker">PLAYER ACCESS</span>
         <h1>Enter StatTrax</h1>
-        <p>Choose a role to demonstrate the two required GUI user groups. Users get player/community tools; admins get moderation and audit controls.</p>
+        <p>
+            Sign in to view your League of Legends match history, generate performance
+            reports, update your profile, and participate in the StatTrax community.
+        </p>
+
         <div class="credential-card">
-            <strong>Demo user</strong>
-            <span>Joshua / player123</span>
+            <strong>Your player hub</strong>
+            <span>Match history · analytics · community · profile</span>
         </div>
-        <div class="credential-card">
-            <strong>Demo admin</strong>
-            <span>admin@stattrax.local / admin123</span>
+
+        <div class="auth-copy-actions">
+            <span>New to StatTrax?</span>
+            <a href="register.php">Create a player account →</a>
         </div>
     </div>
-    <form method="post" class="panel auth-panel">
+
+    <form method="post" class="panel auth-panel" autocomplete="on">
         <input type="hidden" name="next" value="<?= e($next) ?>">
-        <label>Role
-            <select name="role">
-                <option value="user" <?= $role === 'user' ? 'selected' : '' ?>>Player / User</option>
-                <option value="admin" <?= $role === 'admin' ? 'selected' : '' ?>>Administrator</option>
-            </select>
+        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['player_login_csrf']) ?>">
+
+        <div class="auth-panel-heading">
+            <span class="section-kicker">SIGN IN</span>
+            <h2>Player Login</h2>
+        </div>
+
+        <label for="identifier">Username or email
+            <input
+                id="identifier"
+                name="identifier"
+                value="<?= e($identifier) ?>"
+                autocomplete="username"
+                autocapitalize="none"
+                spellcheck="false"
+                required
+            >
         </label>
-        <label>Username or email
-            <input name="identifier" value="<?= e($identifier) ?>" autocomplete="username" required>
+
+        <label for="password">Password
+            <input
+                id="password"
+                type="password"
+                name="password"
+                autocomplete="current-password"
+                required
+            >
         </label>
-        <label>Password
-            <input type="password" name="password" autocomplete="current-password" required>
-        </label>
-        <?php if (isset($error)): ?><div class="notice error"><?= e($error) ?></div><?php endif; ?>
+
+        <?php if ($error): ?>
+            <div class="notice error" role="alert"><?= e($error) ?></div>
+        <?php endif; ?>
+
         <button type="submit">Login</button>
+
+        <div class="auth-form-links">
+            <a href="register.php">Create account</a>
+            <span>•</span>
+            <a href="admin_login.php">Admin? Login here</a>
+        </div>
     </form>
 </section>
 <?php require __DIR__ . '/../src/partials/footer.php'; ?>

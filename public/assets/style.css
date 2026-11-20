@@ -807,6 +807,7 @@ body:not(.home-page) td {
 }
 
 body:not(.home-page) th {
+    position: sticky;
     top: 71px;
     z-index: 5;
     color: #83eaff;
@@ -1168,5 +1169,78 @@ body:not(.home-page) *::-webkit-scrollbar-thumb:hover {
     code {
         color: #333 !important;
         background: transparent !important;
+    }
+}
+
+/* ========================================================================== 
+   STATTRAX // PUBLIC AUTH FLOW
+   Player-first login, registration, and separate administrator access.
+   ========================================================================== */
+.auth-panel-heading {
+    margin-bottom: 4px;
+}
+
+.auth-panel-heading h2 {
+    margin: 6px 0 14px;
+    color: #f5fbff;
+    font-size: 1.5rem;
+    letter-spacing: -.02em;
+}
+
+.auth-copy-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    color: #71889a;
+    font-size: .82rem;
+}
+
+.auth-copy-actions a,
+.auth-form-links a {
+    color: #70eaff;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.auth-copy-actions a:hover,
+.auth-form-links a:hover {
+    color: #fff;
+}
+
+.auth-form-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+    color: #52697b;
+    font-size: .76rem;
+}
+
+.admin-kicker {
+    color: #b992ff !important;
+}
+
+.admin-access-card {
+    border-left-color: #9b7cff;
+    background: rgba(155,124,255,.065);
+}
+
+.admin-auth-panel {
+    border-color: rgba(155,124,255,.24) !important;
+}
+
+.admin-login-button {
+    background: linear-gradient(135deg, #a788ff, #7657df) !important;
+    color: #080511 !important;
+}
+
+@media (max-width: 620px) {
+    .auth-copy-actions,
+    .auth-form-links {
+        align-items: flex-start;
+        flex-direction: column;
     }
 }
