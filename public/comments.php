@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/bootstrap.php';
+requireRole('admin');
 $pageTitle = 'Comment Procedure';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

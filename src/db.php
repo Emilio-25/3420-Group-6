@@ -8,11 +8,12 @@ function db(): PDO
     }
 
     $host = getenv('STATTRAX_DB_HOST') ?: 'localhost';
+    $port = getenv('STATTRAX_DB_PORT') ?: '3306';
     $name = getenv('STATTRAX_DB_NAME') ?: 'stattrax';
     $user = getenv('STATTRAX_DB_USER') ?: 'root';
     $pass = getenv('STATTRAX_DB_PASS') ?: '';
 
-    $dsn = "mysql:host={$host};dbname={$name};charset=utf8mb4";
+    $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
 
     $pdo = new PDO($dsn, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

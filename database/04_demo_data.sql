@@ -1,13 +1,13 @@
 USE stattrax;
 
 INSERT INTO `User` (Username, Password, Email, PUUID, RiotGameName, RiotTagLine) VALUES
-('Joshua', '$2y$10$demo.hash.only', 'joshua@example.com', 'PUUID-JOSHUA', 'Joshua', 'NA1'),
-('Jared',  '$2y$10$demo.hash.only', 'jared@example.com',  'PUUID-JARED',  'Jared',  'NA1'),
-('Jordon', '$2y$10$demo.hash.only', 'jordon@example.com', 'PUUID-JORDON', 'Jordon', 'NA1'),
-('Emilio', '$2y$10$demo.hash.only', 'emilio@example.com', 'PUUID-EMILIO', 'Emilio', 'NA1');
+('Joshua', '$2y$12$78z3L5T8l5CMUw6khywaTuUIcdrALMzZJEJpPB0pcQhXZ2Df14aQ.', 'joshua@example.com', 'PUUID-JOSHUA', 'Joshua', 'NA1'),
+('Jared',  '$2y$12$78z3L5T8l5CMUw6khywaTuUIcdrALMzZJEJpPB0pcQhXZ2Df14aQ.', 'jared@example.com',  'PUUID-JARED',  'Jared',  'NA1'),
+('Jordon', '$2y$12$78z3L5T8l5CMUw6khywaTuUIcdrALMzZJEJpPB0pcQhXZ2Df14aQ.', 'jordon@example.com', 'PUUID-JORDON', 'Jordon', 'NA1'),
+('Emilio', '$2y$12$78z3L5T8l5CMUw6khywaTuUIcdrALMzZJEJpPB0pcQhXZ2Df14aQ.', 'emilio@example.com', 'PUUID-EMILIO', 'Emilio', 'NA1');
 
 INSERT INTO `Admin` (Email, Password, PhoneNumber, AdminLevel) VALUES
-('admin@stattrax.local', '$2y$10$demo.hash.only', '555-0100', 'Administrator');
+('admin@stattrax.local', '$2y$12$IwnAE6kpHVin9QJnHhLYre0C9CDjFX2ADjSVf/Bj5WxF9UMO3GJT6', '555-0100', 'Administrator');
 
 INSERT INTO `Match` (GameMode, PlayedAt, Duration, Result) VALUES
 ('Ranked Solo', '2026-10-03 19:15:00', 1890, 'Win'),

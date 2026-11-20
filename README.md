@@ -1,79 +1,77 @@
-# StatTrax - Phase 4 LAMP Starter
+# StatTrax — Phase 4 + Phase 5 LAMP Application
 
-This package implements the CMPS 3420 Phase 4 database-programming requirements for the StatTrax League of Legends stat tracker/community database.
+StatTrax is a League of Legends stat-tracking/community database prototype for CMPS 3420. This package includes the completed Phase 4 database-programming objects and a Phase 5 PHP GUI that exercises them.
 
-## Included
+## Included Phase 4 database programming
+- 3 views: `PlayerMatchSummary`, `MediaEngagement`, `PendingReports`
+- 4 stored procedures: `CreateMediaPost`, `DeleteComment`, `UpdateReportStatus`, `GetPlayerStatistics`
+- 3 explicit triggers: INSERT / UPDATE / DELETE auditing on `Report`
+- Foreign-key update/delete behaviors
+- `ReportHistory` audit table
 
-- MySQL schema with foreign-key `ON UPDATE` / `ON DELETE` behavior
-- 3 views
-  - `PlayerMatchSummary`
-  - `MediaEngagement`
-  - `PendingReports`
-- 4 stored procedures
-  - `CreateMediaPost` (INSERT)
-  - `DeleteComment` (DELETE)
-  - `UpdateReportStatus` (UPDATE)
-  - `GetPlayerStatistics` (statistics over a date range)
-- 3 explicit triggers
-  - `ReportAfterInsert`
-  - `ReportAfterUpdate`
-  - `ReportAfterDelete`
-- `ReportHistory` shadow table for trigger auditing
-- Demo data and SQL verification script
-- PHP pages that exercise the views/procedures/triggers
-- Phase 4 report section in DOCX and PDF form
+## Included Phase 5 GUI requirements
+- Login for two groups: Player/User and Administrator
+- Role-specific navigation and permissions
+- CRUD through the browser
+- Aggregate and grouped statistics reporting
+- CSV export and Print/Save PDF
+- GUI use of views, procedures, and triggers
+- Direct/indirect use of every database table
 
-## LAMP setup (Ubuntu/Debian example)
+## 1. Install MySQL data
+**Warning:** the installer drops and recreates StatTrax tables. Use a development database.
 
-1. Install Apache, MySQL, and PHP:
+```bash
+mysql -u root -p < database/00_full_install.sql
+```
 
-   ```bash
-   sudo apt update
-   sudo apt install apache2 mysql-server php libapache2-mod-php php-mysql
-   ```
+## 2. Start the PHP app
+```bash
+STATTRAX_DB_USER=root \
+STATTRAX_DB_PASS='YOUR_MYSQL_PASSWORD' \
+php -S localhost:8000 -t public
+```
 
-2. Create the database and objects:
+If your database uses a nonstandard port (for example MAMP), add:
 
-   ```bash
-   mysql -u root -p < database/00_full_install.sql
-   ```
+```bash
+STATTRAX_DB_PORT=8889
+```
 
-3. Copy this project under Apache's web root. For example:
+Then open `http://localhost:8000`.
 
-   ```bash
-   sudo cp -r StatTrax_LAMP_Phase4 /var/www/html/stattrax
-   ```
+## Demo accounts
+### Player/User
+- Username: `Joshua`
+- Password: `player123`
 
-4. Configure database credentials with environment variables if needed:
+### Administrator
+- Email: `admin@stattrax.local`
+- Password: `admin123`
 
-   - `STATTRAX_DB_HOST` (default: `localhost`)
-   - `STATTRAX_DB_NAME` (default: `stattrax`)
-   - `STATTRAX_DB_USER` (default: `root`)
-   - `STATTRAX_DB_PASS` (default: empty)
+## Main GUI pages
+- `index.php` — gamer-style dashboard
+- `login.php` — User/Admin authentication
+- `matches.php` — PlayerMatchSummary view
+- `stats.php` — aggregate + grouped player report
+- `stats_export.php` — CSV export
+- `community.php` — community CRUD / reporting
+- `profile.php` — user-only profile update
+- `reports.php` — admin-only moderation queue
+- `comments.php` — admin-only DeleteComment procedure
+- `trigger_demo.php` — admin-only trigger/audit demonstration
 
-5. Browse to:
+## Final supplemental database dump
+The assignment requires a real `mysqldump` output. Once your final database is populated, run:
 
-   `http://localhost/stattrax/public/index.php`
+```bash
+./scripts/make_database_dump.sh
+```
 
-## Recommended screenshots for the report
+This creates `database/stattrax_final_dump.sql`. The script includes routines and triggers.
 
-Use the pages in `public/` or phpMyAdmin/MySQL Workbench to capture:
-
-1. `PlayerMatchSummary` result
-2. `MediaEngagement` result
-3. `PendingReports` result
-4. `CreateMediaPost` before/after
-5. `DeleteComment` before/after
-6. `UpdateReportStatus` before/after
-7. `GetPlayerStatistics` returned row
-8. INSERT trigger + `ReportHistory`
-9. UPDATE trigger + `ReportHistory`
-10. DELETE trigger + `ReportHistory`
-
-The report files include labeled evidence placeholders so you know where each screenshot goes.
-
-## Important
-
-The SQL is built from the StatTrax relational model used in the project conversations. If your group's Phase 3 implementation changed any table or column names, update the scripts before importing.
-
-This is an educational prototype. Add authentication/authorization before exposing the PHP pages to the public Internet.
+## Final submission notes
+- Update all `TODO` fields in `credentials.txt` with the final deployed URL and instructor-access DB credentials.
+- Capture the screenshots listed in `report/screenshot_checklist_phase5.txt`.
+- `report/Phase5_Report_Section.md` contains report-ready Phase 5 structure/content.
+- See `PHASE5_REQUIREMENTS.md` for the requirement-to-feature map.

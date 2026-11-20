@@ -1,6 +1,6 @@
 <?php
-session_start();
 require_once __DIR__ . '/bootstrap.php';
+requireRole('admin');
 $pageTitle = 'Trigger Demo';
 
 $demoId = (int)($_SESSION['demo_report_id'] ?? 0);
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = "Inserted ReportID {$demoId}; INSERT trigger should now be in ReportHistory.";
         } elseif ($action === 'update' && $demoId > 0) {
             $stmt = db()->prepare("UPDATE `Report` SET Status='Reviewed', ReviewerAdminID=? WHERE ReportID=?");
-            $stmt->execute([(int)$_POST['admin_id'], $demoId]);
+            $stmt->execute([currentAdminId(), $demoId]);
             $message = "Updated ReportID {$demoId}; UPDATE trigger should now be in ReportHistory.";
         } elseif ($action === 'delete' && $demoId > 0) {
             $stmt = db()->prepare('DELETE FROM `Report` WHERE ReportID=?');
@@ -52,8 +52,7 @@ require __DIR__ . '/../src/partials/header.php';
     <h2>2. UPDATE</h2>
     <p>Current demo ReportID: <strong><?= e($demoId ?: 'none') ?></strong></p>
     <input type="hidden" name="action" value="update">
-    <label>Admin ID<input type="number" name="admin_id" min="1" value="1"></label>
-    <button type="submit">Update Test Report</button>
+        <button type="submit">Update Test Report</button>
 </form>
 <form method="post" class="card">
     <h2>3. DELETE</h2>

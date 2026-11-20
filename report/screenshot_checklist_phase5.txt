@@ -1,0 +1,19 @@
+STATTRAX PHASE 5 SCREENSHOT CHECKLIST
+
+[ ] Login page with User/Admin role selector
+[ ] Player login success / player navigation
+[ ] Player Match History (own records only)
+[ ] Player Statistics aggregate summary
+[ ] Champion Performance grouped report
+[ ] CSV export or Print/Save PDF
+[ ] Community create post result
+[ ] Community delete own post result
+[ ] Community submit report result
+[ ] Player Profile update before/after
+[ ] Admin login success / admin navigation
+[ ] Pending Reports moderation update
+[ ] DeleteComment procedure result
+[ ] Trigger INSERT result
+[ ] Trigger UPDATE result
+[ ] Trigger DELETE result
+[ ] ReportHistory rows
